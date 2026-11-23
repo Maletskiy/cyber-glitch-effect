@@ -69,10 +69,17 @@ python3 glitch.py ./photos -o out -n 3 --sheet
 
 `web/index.html` — один файл на canvas, без сборки. Шрифты Medeo лежат рядом и работают офлайн.
 
+Живая версия: https://maletskiy.github.io/cyber-glitch-effect/
+
+Локально:
+
 ```bash
 python3 -m http.server 8000
 # открыть http://127.0.0.1:8000/web/
 ```
+
+Деплой: ветка `gh-pages` собирается из папки `web/` (`git subtree push --prefix web origin gh-pages`),
+GitHub Pages раздаёт её как статику.
 
 Умеет: перетаскивание фото, палитра, слайдеры силы, грязи, размытия фона и символов,
 мягкость краёв, живой режим, скачивание и копирование PNG в буфер, повтор по seed (клавиша `R`).
@@ -81,6 +88,12 @@ python3 -m http.server 8000
 
 ```
 ?img=/photo.jpg&seed=901&tint=blue&feather=0
+```
+
+## Как обновить демо
+
+```bash
+git subtree push --prefix web origin gh-pages
 ```
 
 ## License
