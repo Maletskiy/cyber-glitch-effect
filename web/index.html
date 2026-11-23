@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cyber Glitch Effect</title>
+<link rel="stylesheet" href="./medeo.css" />
+<style>
+  :root {
+    --bg: #04050a;
+    --panel: #07080f;
+    --panel-2: #0b0d16;
+    --line: rgba(34, 227, 255, 0.16);
+    --line-strong: rgba(34, 227, 255, 0.42);
+    --text: #dcefff;
+    --muted: rgba(220, 239, 255, 0.5);
+    --neon: #22e3ff;
+    --neon-2: #ff2d95;
+    --accent: var(--neon);
+    --radius: 2px;
+    --font-sans: "Medeo Sans", system-ui, sans-serif;
+    --font-mono: "Medeo Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(900px 600px at 78% 12%, rgba(34, 227, 255, 0.07), transparent 65%),
+      radial-gradient(700px 500px at 12% 88%, rgba(255, 45, 149, 0.06), transparent 65%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* сетка на фоне */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(34, 227, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 227, 255, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at 50% 40%, #000 30%, transparent 85%);
+    opacity: 0.55;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 348px 1fr;
+    height: 100%;
+  }
+
+  /* ------- панель ------- */
+  .panel {
+    position: relative;
+    background: linear-gradient(180deg, rgba(10, 12, 22, 0.96), rgba(5, 6, 11, 0.98));
+    border-right: 1px solid var(--line-strong);
+    box-shadow: inset -22px 0 44px -34px var(--neon);
+    padding: 24px 22px 18px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .panel::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--neon), transparent);
+    opacity: 0.5;
+  }
+
+  /* ------- шапка ------- */
+  .brand { display: flex; flex-direction: column; gap: 8px; }
+
+  .brand .kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--neon);
+    opacity: 0.75;
+  }
+
+  .brand h1 {
+    position: relative;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #f2fbff;
+    text-shadow: 0 0 18px rgba(34, 227, 255, 0.35);
+  }
+
+  .brand h1::before,
+  .brand h1::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .brand h1::before {
+    color: var(--neon-2);
+    transform: translate(1.5px, 0);
+    opacity: 0.7;
+    animation: glitchA 5.2s infinite steps(1);
+  }
+  .brand h1::after {
+    color: var(--neon);
+    transform: translate(-1.5px, 0);
+    opacity: 0.7;
+    animation: glitchB 4.1s infinite steps(1);
+  }
+  @keyframes glitchA {
+    0%, 91%, 100% { clip-path: inset(0 0 100% 0); }
+    92% { clip-path: inset(8% 0 62% 0); transform: translate(3px, -1px); }
+    94% { clip-path: inset(46% 0 28% 0); transform: translate(-2px, 1px); }
+    96% { clip-path: inset(72% 0 6% 0); transform: translate(2px, 0); }
+  }
+  @keyframes glitchB {
+    0%, 88%, 100% { clip-path: inset(0 0 100% 0); }
+    89% { clip-path: inset(28% 0 48% 0); transform: translate(-3px, 0); }
+    92% { clip-path: inset(64% 0 12% 0); transform: translate(2px, 1px); }
+    95% { clip-path: inset(4% 0 82% 0); transform: translate(-1px, 0); }
+  }
+
+  .brand .rule {
+    height: 1px;
+    background: linear-gradient(90deg, var(--neon), rgba(255, 45, 149, 0.6) 55%, transparent);
+    box-shadow: 0 0 10px rgba(34, 227, 255, 0.45);
+  }
+
+  .group { display: flex; flex-direction: column; gap: 10px; }
+
+  .group > label,
+  .group-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--neon);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .group-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(34, 227, 255, 0.35), transparent);
+  }
+
+  /* общий механизм: срез по углам с линией по откосу */
+  .cut {
+    position: relative;
+    isolation: isolate;
+    background: transparent;
+    --bevel: 10px;
+    --edge: var(--line-strong);
+    --face: var(--panel-2);
+    --glow: transparent;
+    filter: drop-shadow(0 0 10px var(--glow));
+    transition: filter .18s;
+  }
+  .cut::before,
+  .cut::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    transition: background .15s;
+  }
+  .cut::before {
+    inset: 0;
+    background: var(--edge);
+    clip-path: polygon(var(--bevel) 0, 100% 0, 100% calc(100% - var(--bevel)), calc(100% - var(--bevel)) 100%, 0 100%, 0 var(--bevel));
+  }
+  .cut::after {
+    inset: 1px;
+    background: var(--face);
+    clip-path: polygon(calc(var(--bevel) - 1px) 0, 100% 0, 100% calc(100% - var(--bevel) + 1px), calc(100% - var(--bevel) + 1px) 100%, 0 100%, 0 calc(var(--bevel) - 1px));
+  }
+
+  .drop {
+    --bevel: 13px;
+    --face: rgba(10, 14, 24, 0.92);
+    padding: 19px 18px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .drop:hover, .drop.over {
+    --edge: var(--neon);
+    --face: rgba(13, 24, 38, 0.95);
+    --glow: rgba(34, 227, 255, 0.22);
+    color: var(--text);
+  }
+  .drop strong { display: block; color: var(--text); font-weight: 600; margin-bottom: 3px; letter-spacing: 0.01em; }
+
+  .tints { display: flex; flex-wrap: wrap; gap: 9px; }
+
+  .swatch {
+    --bevel: 8px;
+    --face: var(--c, var(--panel-2));
+    width: 32px; height: 32px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .swatch:hover { --edge: var(--neon); --glow: rgba(34, 227, 255, 0.35); }
+  .swatch[aria-pressed="true"] {
+    --edge: #ffffff;
+    --glow: rgba(34, 227, 255, 0.55);
+  }
+  .swatch.auto {
+    --c: conic-gradient(#22e3ff, #ff2d95, #22e3ff);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: #04050a;
+    display: grid;
+    place-items: center;
+  }
+  .swatch.none {
+    --c:
+      linear-gradient(45deg, rgba(34, 227, 255, .16) 25%, transparent 25%, transparent 75%, rgba(34, 227, 255, .16) 75%) 0 0 / 10px 10px,
+      linear-gradient(45deg, rgba(34, 227, 255, .16) 25%, transparent 25%, transparent 75%, rgba(34, 227, 255, .16) 75%) 5px 5px / 10px 10px,
+      #06070d;
+  }
+  .swatch.custom { --c: #2f62ff; }
+  .swatch.custom input {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: 0; padding: 0; background: none; cursor: pointer;
+    opacity: 0;
+    z-index: 1;
+  }
+
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .row label { font-size: 14px; color: var(--text); }
+  .row .val {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--neon);
+    min-width: 44px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 10px rgba(34, 227, 255, 0.45);
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 22px;
+    background: none;
+    margin: 0;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon), rgba(255, 45, 149, 0.55));
+    box-shadow: 0 0 8px rgba(34, 227, 255, 0.4);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 16px;
+    margin-top: -7px;
+    background: #eafcff;
+    box-shadow: 0 0 10px var(--neon), 0 0 2px #fff;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  input[type="range"]::-moz-range-track {
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon), rgba(255, 45, 149, 0.55));
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 12px; height: 16px; border: 0;
+    background: #eafcff;
+    box-shadow: 0 0 10px var(--neon);
+  }
+
+  .toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; font-size: 14px;
+  }
+  .switch {
+    --bevel: 6px;
+    --face: #0a0d16;
+    width: 42px; height: 20px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .switch .knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 12px; height: 12px;
+    background: rgba(220, 239, 255, 0.6);
+    z-index: 1;
+    clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+    transition: transform .15s, background .15s;
+  }
+  .switch[aria-pressed="true"] {
+    --face: var(--neon);
+    --edge: var(--neon);
+    --glow: rgba(34, 227, 255, 0.35);
+  }
+  .switch[aria-pressed="true"] .knob {
+    transform: translateX(21px);
+    background: #05070c;
+  }
+
+  .actions { display: grid; gap: 9px; margin-top: auto; }
+
+  .actions .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .actions .pair .btn {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 12px 8px;
+    white-space: nowrap;
+  }
+
+  .key {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 0 5px;
+    border: 1px solid rgba(4, 5, 10, 0.55);
+    font-size: 11px;
+    line-height: 1.5;
+    vertical-align: 1px;
+  }
+
+  .btn {
+    --bevel: 10px;
+    --face: rgba(9, 12, 20, 0.94);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text);
+    border: 0;
+    padding: 13px 15px;
+    cursor: pointer;
+  }
+  .btn:hover {
+    --edge: var(--neon);
+    --face: rgba(12, 22, 34, 0.96);
+    --glow: rgba(34, 227, 255, 0.25);
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary {
+    --edge: var(--neon);
+    --face: var(--neon);
+    --glow: rgba(34, 227, 255, 0.45);
+    color: #04050a;
+  }
+  .btn.primary:hover { --face: #6ff0ff; --glow: rgba(34, 227, 255, 0.6); }
+
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    display: flex; justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+  }
+  .meta b { color: var(--neon); font-weight: 500; }
+
+  /* ------- сцена ------- */
+  .stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 30px;
+    overflow: hidden;
+  }
+
+  .stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px);
+    mix-blend-mode: overlay;
+    opacity: 0.6;
+  }
+
+  .hud { position: absolute; inset: 18px; pointer-events: none; }
+  .hud i {
+    position: absolute;
+    width: 26px; height: 26px;
+    border: 1px solid var(--neon);
+    opacity: 0.5;
+    box-shadow: 0 0 12px rgba(34, 227, 255, 0.25);
+  }
+  .hud i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+  .hud i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+  .hud i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+  .hud i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+  .frame {
+    display: none;
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 0 0 1px rgba(4, 5, 10, 0.9), 0 24px 70px rgba(0, 0, 0, 0.7), 0 0 40px rgba(34, 227, 255, 0.12);
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  #out { display: block; max-width: 100%; max-height: calc(100vh - 60px); width: auto; height: auto; }
+
+  #live {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  #live.on { opacity: 1; }
+
+  .empty {
+    display: grid; place-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 14px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+  .empty .big { font-size: 17px; color: var(--neon); text-transform: uppercase; letter-spacing: 0.18em; }
+
+  .hint {
+    position: absolute; left: 30px; bottom: 18px;
+    font-size: 11px; color: var(--muted);
+    font-family: var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .busy {
+    position: absolute; top: 20px; right: 24px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--neon); opacity: 0;
+    transition: opacity .2s;
+  }
+  .busy.on { opacity: 0.9; }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    .app { grid-template-columns: 1fr; height: auto; min-height: 100%; }
+    .panel { border-right: 0; border-bottom: 1px solid var(--line-strong); }
+    .stage { padding: 18px; min-height: 46vh; }
+    #out { max-height: 60vh; }
+    .actions { margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <div class="brand">
+      <div class="kicker">// image processor</div>
+      <h1 data-text="Cyber Glitch Effect">Cyber Glitch Effect</h1>
+      <div class="rule"></div>
+    </div>
+
+    <div class="drop cut" id="drop">
+      <strong>Перетащи фотографию</strong>
+      или нажми, чтобы выбрать файл
+      <input type="file" id="file" accept="image/*" hidden />
+    </div>
+
+    <div class="group">
+      <span class="group-title">Оттенок</span>
+      <div class="tints" id="tints">
+        <button class="swatch cut none" data-tint="none" aria-pressed="true" title="Без оттенка — исходные цвета"></button>
+        <button class="swatch cut auto" data-tint="auto" title="Взять оттенок из фото">A</button>
+        <button class="swatch cut" data-tint="blue" style="--c:#2f62ff" title="Кобальт"></button>
+        <button class="swatch cut" data-tint="orange" style="--c:#f4691e" title="Коралловый"></button>
+        <button class="swatch cut" data-tint="green" style="--c:#9bd813" title="Лайм"></button>
+        <button class="swatch cut" data-tint="magenta" style="--c:#e91e8c" title="Фуксия"></button>
+        <button class="swatch cut custom" title="Свой цвет">
+          <input type="color" id="custom" value="#2f62ff" />
+        </button>
+      </div>
+    </div>
+
+    <div class="group">
+      <span class="group-title">Сила эффекта</span>
+
+      <div>
+        <div class="row"><label for="intensity">Полосы</label><span class="val" id="intensity-v">1.0</span></div>
+        <input type="range" id="intensity" min="0" max="2" step="0.05" value="1" />
+      </div>
+
+      <div>
+        <div class="row"><label for="dirt">Грязь</label><span class="val" id="dirt-v">1.2</span></div>
+        <input type="range" id="dirt" min="0" max="2" step="0.05" value="1.2" />
+      </div>
+
+      <div>
+        <div class="row"><label for="bgblur">Размытие фона</label><span class="val" id="bgblur-v">1.0</span></div>
+        <input type="range" id="bgblur" min="0" max="2" step="0.05" value="1" />
+      </div>
+
+      <div>
+        <div class="row"><label for="glyphs">Символы</label><span class="val" id="glyphs-v">1.0</span></div>
+        <input type="range" id="glyphs" min="0" max="2" step="0.05" value="1" />
+      </div>
+
+      <div>
+        <div class="row"><label for="feather">Мягкость краёв</label><span class="val" id="feather-v">1.0</span></div>
+        <input type="range" id="feather" min="0" max="2" step="0.05" value="1" />
+        <div class="row" style="font-size:12px;color:var(--muted)">
+          <span>рубленые</span><span>мягкие</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="toggle">
+        <span>Живой режим</span>
+        <button class="switch cut" id="live-btn" aria-pressed="false" aria-label="Живой режим"><span class="knob"></span></button>
+      </div>
+      <div class="toggle">
+        <span>Символы</span>
+        <button class="switch cut" id="text-btn" aria-pressed="true" aria-label="Показывать символы"><span class="knob"></span></button>
+      </div>
+    </div>
+
+    <div class="meta">
+      <span>seed <b id="seed">—</b></span>
+      <span id="dims">—</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn cut primary" id="again">Ещё вариант <span class="key">R</span></button>
+      <div class="pair">
+        <button class="btn cut" id="save">Скачать PNG</button>
+        <button class="btn cut" id="copy">Скопировать PNG</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="hud" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="frame" id="frame">
+      <canvas id="out" width="10" height="10"></canvas>
+      <canvas id="live" width="10" height="10"></canvas>
+    </div>
+    <div class="empty" id="empty">
+      <div class="big">Нет сигнала</div>
+      <div>Перетащи фото в панель или в это окно</div>
+    </div>
+    <div class="busy" id="busy">рендер…</div>
+    <div class="hint" id="hint">ожидание файла</div>
+  </main>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ---------- утилиты ---------- */
+  const $ = (id) => document.getElementById(id);
+  const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const rand = (r, a, b) => a + r() * (b - a);
+  const randInt = (r, a, b) => Math.floor(a + r() * (b - a + 1));
+  const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
+
+  function hexToRgb(hex) {
+    const h = hex.replace("#", "");
+    const n = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+    return [parseInt(n.slice(0, 2), 16) / 255, parseInt(n.slice(2, 4), 16) / 255, parseInt(n.slice(4, 6), 16) / 255];
+  }
+  function rgbToHsv([r, g, b]) {
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = 0;
+    if (d) {
+      if (max === r) h = ((g - b) / d) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h *= 60; if (h < 0) h += 360;
+    }
+    return [h, max ? d / max : 0, max];
+  }
+  function hsvToRgb(h, s, v) {
+    h = ((h % 360) + 360) % 360 / 60;
+    const c = v * s, x = c * (1 - Math.abs((h % 2) - 1)), m = v - c;
+    let r = 0, g = 0, b = 0;
+    if (h < 1) [r, g, b] = [c, x, 0];
+    else if (h < 2) [r, g, b] = [x, c, 0];
+    else if (h < 3) [r, g, b] = [0, c, x];
+    else if (h < 4) [r, g, b] = [0, x, c];
+    else if (h < 5) [r, g, b] = [x, 0, c];
+    else [r, g, b] = [c, 0, x];
+    return [r + m, g + m, b + m];
+  }
+  const mixRgb = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+
+  const PRESETS = {
+    blue: [0.57, 0.92, 0.95],
+    orange: [0.055, 0.95, 0.96],
+    green: [0.21, 0.95, 0.83],
+    magenta: [0.92, 0.90, 0.94],
+  };
+  const CHARSET = "0000112344568#/#/XHMSSI=_" + "ABCDEFHKLMNPRSTUVWXYZ";
+
+  /* ---------- состояние ---------- */
+  const state = {
+    img: null,
+    tint: "none",
+    seed: Math.floor(Math.random() * 900000) + 100000,
+    intensity: 1,
+    dirt: 1.2,
+    glyphs: 1,
+    feather: 1,
+    bgBlur: 1,
+    text: true,
+    live: false,
+    noTint: false,
+    W: 0, H: 0,
+  };
+
+  const out = $("out");
+  const octx = out.getContext("2d");
+  const liveCv = $("live");
+  const lctx = liveCv.getContext("2d");
+
+  // рабочие буферы
+  const work = document.createElement("canvas");
+  const wctx = work.getContext("2d", { willReadFrequently: true });
+  const patch = document.createElement("canvas");
+  const pctx = patch.getContext("2d");
+  const snap = document.createElement("canvas");
+  const sctx = snap.getContext("2d");
+  const tmpCv = document.createElement("canvas");
+  const tctx = tmpCv.getContext("2d");
+  const maskCv = document.createElement("canvas");
+  const mctx2 = maskCv.getContext("2d");
+  const maskBlur = document.createElement("canvas");
+  const mbctx = maskBlur.getContext("2d");
+  const bgCv = document.createElement("canvas");
+  const bgctx = bgCv.getContext("2d");
+  const base = document.createElement("canvas"); // готовый кадр для живого режима
+  const bctx = base.getContext("2d");
+
+  // шум для зерна
+  const noise = document.createElement("canvas");
+  noise.width = 256; noise.height = 256;
+  {
+    const nctx = noise.getContext("2d");
+    const id = nctx.createImageData(256, 256);
+    for (let i = 0; i < id.data.length; i += 4) {
+      const v = 128 + (Math.random() * 2 - 1) * 90;
+      id.data[i] = id.data[i + 1] = id.data[i + 2] = v;
+      id.data[i + 3] = 255;
+    }
+    nctx.putImageData(id, 0, 0);
+  }
+  const patterns = new Map();
+  function pat(ctx) {
+    if (!patterns.has(ctx)) patterns.set(ctx, ctx.createPattern(noise, "repeat"));
+    return patterns.get(ctx);
+  }
+
+  /* ---------- тонировка ---------- */
+  function resolveTint(imgData) {
+    if (state.tint === "none") return null;
+    if (state.tint === "auto") {
+      // преобладающий оттенок по насыщенным пикселям
+      const d = imgData.data;
+      const hist = new Float32Array(72);
+      let count = 0;
+      for (let i = 0; i < d.length; i += 4 * 37) {
+        const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+        const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+        const s = mx > 0.001 ? (mx - mn) / mx : 0;
+        if (s < 0.35 || mx < 0.18) continue;
+        const [h] = rgbToHsv([r, g, b]);
+        const bin = Math.min(71, Math.floor((h / 360) * 72));
+        hist[bin] += s * mx;
+        count++;
+      }
+      if (count < 30) return hsvToRgb(210, 0.92, 0.95);
+      let best = 0;
+      for (let i = 1; i < 72; i++) if (hist[i] > hist[best]) best = i;
+      return hsvToRgb(((best + 0.5) / 72) * 360, 0.92, 0.95);
+    }
+    if (PRESETS[state.tint]) {
+      const [h, s, v] = PRESETS[state.tint];
+      return hsvToRgb(h * 360, s, v);
+    }
+    return hexToRgb(state.tint);
+  }
+
+  function applyNeutral(ctx, contrast = 1.05, saturation = 1.06) {
+    const id = ctx.getImageData(0, 0, state.W, state.H);
+    const d = id.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const l = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+      for (let k = 0; k < 3; k++) {
+        let v = l + (d[i + k] - l) * saturation;
+        v = (v - 127.5) * contrast + 127.5;
+        d[i + k] = v < 0 ? 0 : v > 255 ? 255 : v;
+      }
+    }
+    ctx.putImageData(id, 0, 0);
+  }
+
+  function applyDuotone(ctx, tint) {
+    const W = state.W, H = state.H;
+    const id = ctx.getImageData(0, 0, W, H);
+    const d = id.data;
+    const [hue] = rgbToHsv(tint);
+    const comp = hsvToRgb(hue + 180, 0.75, 0.30);
+    const white = [1, 0.985, 0.97];
+    const black = [0.010, 0.010, 0.014];
+
+    const stops = [0, 0.16, 0.38, 0.62, 0.82, 1];
+    const shadow = mixRgb(mixRgb(black, comp, 0.30), tint, 0.22);
+    const cols = [
+      shadow,
+      mixRgb(mixRgb(black, comp.map((c) => c * 0.7), 0.20), tint, 0.16),
+      tint.map((c) => c * 0.40),
+      tint.slice(),
+      mixRgb(tint, white, 0.50),
+      mixRgb(tint, white, 0.90),
+    ];
+    const lut = new Uint8Array(256 * 3);
+    for (let i = 0; i < 256; i++) {
+      const x = i / 255;
+      let a = 0;
+      while (a < stops.length - 2 && x > stops[a + 1]) a++;
+      const t0 = stops[a], t1 = stops[a + 1];
+      const k = clamp((x - t0) / (t1 - t0 || 1), 0, 1);
+      const c = mixRgb(cols[a], cols[a + 1], k);
+      lut[i * 3] = c[0] * 255; lut[i * 3 + 1] = c[1] * 255; lut[i * 3 + 2] = c[2] * 255;
+    }
+
+    const contrast = 1.08;
+    for (let i = 0; i < d.length; i += 4) {
+      let l = (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+      l = clamp((l - 0.015) / 0.985, 0, 1) ** 1.04;
+      l = clamp(0.5 + (l - 0.5) * contrast, 0, 1);
+      const idx = (l * 255) | 0;
+      d[i] = lut[idx * 3];
+      d[i + 1] = lut[idx * 3 + 1];
+      d[i + 2] = lut[idx * 3 + 2];
+    }
+    ctx.putImageData(id, 0, 0);
+  }
+
+  /* ---------- карта яркости для выбора источника ---------- */
+  let lumMap = null, lumW = 0, lumH = 0, lumScale = 16;
+
+  function buildLumMap() {
+    lumW = Math.max(4, Math.floor(state.W / lumScale));
+    lumH = Math.max(4, Math.floor(state.H / lumScale));
+    const id = wctx.getImageData(0, 0, state.W, state.H);
+    const d = id.data;
+    lumMap = new Float32Array(lumW * lumH);
+    for (let y = 0; y < lumH; y++) {
+      for (let x = 0; x < lumW; x++) {
+        const px = Math.min(state.W - 1, x * lumScale);
+        const py = Math.min(state.H - 1, y * lumScale);
+        const i = (py * state.W + px) * 4;
+        lumMap[y * lumW + x] = (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+      }
+    }
+  }
+
+  function meanLum(x, y, w, h) {
+    if (!lumMap) return 0.4;
+    const x0 = clamp(Math.floor(x / lumScale), 0, lumW - 1);
+    const x1 = clamp(Math.ceil((x + w) / lumScale), 1, lumW);
+    const y0 = clamp(Math.floor(y / lumScale), 0, lumH - 1);
+    const y1 = clamp(Math.ceil((y + h) / lumScale), 1, lumH);
+    let s = 0, n = 0;
+    for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) { s += lumMap[yy * lumW + xx]; n++; }
+    return n ? s / n : 0.4;
+  }
+
+  function pickSource(r, sw, sh) {
+    let best = [0, 0], bestW = -1;
+    const W = state.W, H = state.H;
+    for (let i = 0; i < 7; i++) {
+      const x = randInt(r, 0, Math.max(0, W - sw));
+      const y = randInt(r, 0, Math.max(0, H - sh));
+      const w = meanLum(x, y, sw, sh) ** 2 + 0.01;
+      if (w > bestW) { bestW = w; best = [x, y]; }
+    }
+    return best;
+  }
+
+  /* ---------- маска растушёвки ---------- */
+  function featherPatch(cv, fx, fy) {
+    const w = cv.width, h = cv.height;
+    if (fy > 1) {
+      const g = cv.getContext("2d");
+      g.globalCompositeOperation = "destination-in";
+      const lg = g.createLinearGradient(0, 0, 0, h);
+      const t = Math.min(0.5, fy / h);
+      lg.addColorStop(0, "rgba(0,0,0,0)");
+      lg.addColorStop(t, "rgba(0,0,0,1)");
+      lg.addColorStop(1 - t, "rgba(0,0,0,1)");
+      lg.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = lg;
+      g.fillRect(0, 0, w, h);
+      g.globalCompositeOperation = "source-over";
+    }
+    if (fx > 1) {
+      const g = cv.getContext("2d");
+      g.globalCompositeOperation = "destination-in";
+      const lg = g.createLinearGradient(0, 0, w, 0);
+      const t = Math.min(0.5, fx / w);
+      lg.addColorStop(0, "rgba(0,0,0,0)");
+      lg.addColorStop(t, "rgba(0,0,0,1)");
+      lg.addColorStop(1 - t, "rgba(0,0,0,1)");
+      lg.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = lg;
+      g.fillRect(0, 0, w, h);
+      g.globalCompositeOperation = "source-over";
+    }
+    return cv;
+  }
+
+  function featherPx(base, r) {
+    return Math.max(0, Math.round(base * state.feather * (0.7 + 0.6 * r())));
+  }
+
+  /* ---------- отрисовка куска ---------- */
+  function stretchFill(r) {
+    const W = state.W, H = state.H;
+    const h = randInt(r, 3, Math.max(4, Math.floor(H * 0.12)));
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const sw = Math.max(2, randInt(r, 4, Math.max(6, Math.floor(W / 14))));
+    const sh = Math.max(1, randInt(r, Math.max(1, Math.floor(h / 12)), Math.max(2, h)));
+    const [sx, sy] = pickSource(r, sw, sh);
+
+    const span = rand(r, 0.25, 0.78);
+    const tw = Math.max(24, Math.floor(W * span));
+    const x0 = randInt(r, 0, Math.max(0, W - tw));
+
+    patch.width = tw; patch.height = h;
+    pctx.clearRect(0, 0, tw, h);
+    pctx.imageSmoothingEnabled = true;
+    pctx.drawImage(work, sx, sy, sw, sh, 0, 0, tw, h);
+
+    const fx = featherPx(Math.min(tw / 2, 24), r);
+    const fy = featherPx(Math.min(h / 2, 8), r);
+    if (fx > 1 || fy > 1) featherPatch(patch, fx, fy);
+
+    wctx.globalAlpha = rand(r, 0.6, 0.95);
+    wctx.drawImage(patch, x0, y, tw, h);
+    wctx.globalAlpha = 1;
+  }
+
+  function warpStretch(r) {
+    // вертикальные полоски разной толщины
+    const W = state.W, H = state.H;
+    const h = randInt(r, 4, Math.max(5, Math.floor(H * 0.12)));
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const cw = Math.max(2, randInt(r, 4, Math.max(6, Math.floor(W / 18))));
+    const cx = randInt(r, 0, Math.max(0, W - cw));
+    const span = rand(r, 0.3, 0.8);
+    const tw = Math.max(24, Math.floor(W * span));
+    const x0 = randInt(r, 0, Math.max(0, W - tw));
+
+    patch.width = tw; patch.height = h;
+    pctx.clearRect(0, 0, tw, h);
+
+    const segs = randInt(r, 4, 12);
+    let x = 0;
+    for (let i = 0; i < segs; i++) {
+      const segW = i === segs - 1 ? tw - x : Math.max(1, Math.round((tw / segs) * rand(r, 0.3, 1.7)));
+      const sx = cx + Math.floor((i / segs) * cw);
+      pctx.drawImage(work, sx, y, Math.max(1, Math.floor(cw / segs)), h, x, 0, segW, h);
+      x += segW;
+      if (x >= tw) break;
+    }
+
+    const fx = featherPx(Math.min(tw / 2, 26), r);
+    const fy = featherPx(Math.min(h / 2, 6), r);
+    if (fx > 1 || fy > 1) featherPatch(patch, fx, fy);
+
+    wctx.globalAlpha = rand(r, 0.7, 1);
+    wctx.drawImage(patch, x0, y, tw, h);
+    wctx.globalAlpha = 1;
+  }
+
+  function stripeH(r) {
+    // тонкая строка растянута по высоте
+    const W = state.W, H = state.H;
+    const h = randInt(r, 4, Math.max(5, Math.floor(H * 0.12)));
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const sh = randInt(r, 1, 4);
+    const sy = randInt(r, 0, Math.max(0, H - sh));
+    const span = rand(r, 0.3, 0.8);
+    const tw = Math.max(24, Math.floor(W * span));
+    const x0 = randInt(r, 0, Math.max(0, W - tw));
+
+    patch.width = tw; patch.height = h;
+    pctx.clearRect(0, 0, tw, h);
+
+    const segs = randInt(r, 3, 8);
+    let gy = 0;
+    for (let i = 0; i < segs; i++) {
+      const segH = i === segs - 1 ? h - gy : Math.max(1, Math.round((h / segs) * rand(r, 0.3, 1.7)));
+      const row = sy + Math.floor((i / segs) * sh);
+      pctx.drawImage(work, x0, row, tw, 1, 0, gy, tw, segH);
+      gy += segH;
+      if (gy >= h) break;
+    }
+
+    const fx = featherPx(Math.min(tw / 2, 20), r);
+    const fy = featherPx(Math.min(h / 2, 4), r);
+    if (fx > 1 || fy > 1) featherPatch(patch, fx, fy);
+
+    wctx.globalAlpha = rand(r, 0.65, 1);
+    wctx.drawImage(patch, x0, y, tw, h);
+    wctx.globalAlpha = 1;
+  }
+
+  function gradientBand(r) {
+    const W = state.W, H = state.H;
+    const h = randInt(r, 4, Math.max(5, Math.floor(H * 0.12)));
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const sw = randInt(r, 4, 44), sh = randInt(r, 3, Math.max(4, h));
+    const [sx, sy] = pickSource(r, sw, sh);
+    const span = rand(r, 0.25, 0.8);
+    const tw = Math.max(24, Math.floor(W * span));
+    const x0 = randInt(r, 0, Math.max(0, W - tw));
+
+    patch.width = tw; patch.height = h;
+    pctx.clearRect(0, 0, tw, h);
+    pctx.filter = `blur(${rand(r, 0.5, 4).toFixed(1)}px)`;
+    pctx.drawImage(work, sx, sy, sw, sh, -6, -6, tw + 12, h + 12);
+    pctx.filter = "none";
+
+    const fx = featherPx(Math.min(tw / 2, 30), r);
+    const fy = featherPx(Math.min(h / 2, 10), r);
+    if (fx > 1 || fy > 1) featherPatch(patch, fx, fy);
+
+    wctx.globalAlpha = rand(r, 0.7, 1);
+    wctx.drawImage(patch, x0, y, tw, h);
+    wctx.globalAlpha = 1;
+  }
+
+  function shiftBand(r) {
+    const W = state.W, H = state.H;
+    const h = randInt(r, 3, Math.max(4, Math.floor(H * 0.12)));
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const dx = Math.round((r() * 2 - 1) * W * 0.10);
+    if (Math.abs(dx) < 4) return;
+
+    const hard = state.feather < 0.2;
+    const span = rand(r, 0.3, 0.8);
+    const tw = Math.max(24, Math.floor(W * span));
+    const x0 = randInt(r, 0, Math.max(0, W - tw));
+
+    patch.width = tw; patch.height = h;
+    pctx.clearRect(0, 0, tw, h);
+    pctx.drawImage(work, x0, y, tw, h, 0, 0, tw, h);
+
+    if (!hard) {
+      const fx = featherPx(Math.min(tw / 2, 18), r);
+      const fy = featherPx(Math.min(h / 2, 3), r);
+      if (fx > 1 || fy > 1) featherPatch(patch, fx, fy);
+    }
+
+    wctx.save();
+    wctx.beginPath();
+    wctx.rect(x0, y, tw, h);
+    wctx.clip();
+    wctx.drawImage(patch, x0 + dx, y, tw, h);
+    wctx.restore();
+
+    if (r() < 0.5) {
+      wctx.globalAlpha = 0.55;
+      wctx.fillStyle = "#ffffff";
+      wctx.fillRect(x0, y + h - 1, tw, 1);
+      wctx.globalAlpha = 1;
+    }
+  }
+
+  function progressiveBlur(r) {
+    const W = state.W, H = state.H;
+    const h = randInt(r, 4, Math.max(5, Math.floor(H * 0.12)));
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const span = rand(r, 0.3, 0.85);
+    const tw = Math.max(30, Math.floor(W * span));
+    const x0 = randInt(r, 0, Math.max(0, W - tw));
+
+    patch.width = tw; patch.height = h;
+    pctx.clearRect(0, 0, tw, h);
+
+    const steps = 6;
+    for (let i = 0; i < steps; i++) {
+      const sw = Math.ceil(tw / steps);
+      const bx = i * sw;
+      const blur = 0.4 + (i / (steps - 1)) ** 1.4 * Math.min(18, W / 90);
+      pctx.filter = `blur(${blur.toFixed(1)}px)`;
+      pctx.drawImage(work, x0 + bx, y, sw, h, bx - 4, -4, sw + 8, h + 8);
+    }
+    pctx.filter = "none";
+
+    const fx = featherPx(Math.min(tw / 2, 20), r);
+    const fy = featherPx(Math.min(h / 2, 4), r);
+    if (fx > 1 || fy > 1) featherPatch(patch, fx, fy);
+
+    wctx.globalAlpha = rand(r, 0.75, 1);
+    wctx.drawImage(patch, x0, y, tw, h);
+    wctx.globalAlpha = 1;
+  }
+
+  function motionBlur(r) {
+    const W = state.W, H = state.H;
+    const h = randInt(r, 3, Math.max(4, Math.floor(H * 0.12)));
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const span = rand(r, 0.3, 0.85);
+    const tw = Math.max(30, Math.floor(W * span));
+    const x0 = randInt(r, 0, Math.max(0, W - tw));
+
+    patch.width = tw; patch.height = h;
+    pctx.clearRect(0, 0, tw, h);
+    pctx.imageSmoothingEnabled = true;
+
+    // сжали по x и растянули обратно — горизонтальный смаз
+    const squash = Math.max(4, Math.floor(tw / rand(r, 8, 40)));
+    pctx.drawImage(work, x0, y, tw, h, 0, 0, squash, h);
+    pctx.drawImage(patch, 0, 0, squash, h, 0, 0, tw, h);
+
+    const dy = randInt(r, -3, 3);
+    const fx = featherPx(Math.min(tw / 2, 20), r);
+    const fy = featherPx(Math.min(h / 2, 4), r);
+    if (fx > 1 || fy > 1) featherPatch(patch, fx, fy);
+
+    wctx.globalAlpha = rand(r, 0.6, 0.85);
+    wctx.drawImage(patch, x0, y + dy, tw, h);
+    wctx.globalAlpha = 1;
+  }
+
+  function streakBar(r, tint) {
+    const W = state.W, H = state.H;
+    const h = randInt(r, Math.max(14, Math.floor(H / 55)), Math.max(22, Math.floor(H / 14)));
+    if (h >= H) return;
+    const y = randInt(r, 0, Math.max(0, H - h));
+    const width = Math.max(60, Math.floor(W * rand(r, 0.24, 0.7)));
+    const x0 = randInt(r, Math.floor(W * 0.02), Math.max(Math.floor(W * 0.03), W - width - Math.floor(W * 0.02)));
+    const bw = Math.min(width, W - x0 - 8);
+    if (bw < 30) return;
+
+    const sy = clamp(y + randInt(r, -h, h), 0, H - 2);
+    const sh = randInt(r, 1, Math.min(4, H - sy));
+    const sw = randInt(r, 4, 64);
+    const sx = randInt(r, 0, Math.max(0, W - sw));
+
+    patch.width = bw; patch.height = h;
+    pctx.clearRect(0, 0, bw, h);
+    pctx.imageSmoothingEnabled = true;
+    pctx.drawImage(work, sx, sy, sw, sh, 0, 0, bw, h);
+
+    // горизонтальный смаз
+    pctx.drawImage(patch, 0, 0, bw, h, 0, 0, Math.max(2, Math.floor(bw / 45)), h);
+    pctx.drawImage(patch, 0, 0, Math.max(2, Math.floor(bw / 45)), h, 0, 0, bw, h);
+
+    // тёмная основа, светлые пробои
+    const id = pctx.getImageData(0, 0, bw, h);
+    const d = id.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const l = (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+      const hi = clamp((l - 0.45) * 2.5, 0, 1);
+      const k = 0.45 + hi * 0.95;
+      d[i] = clamp(d[i] * k, 0, 255);
+      d[i + 1] = clamp(d[i + 1] * k, 0, 255);
+      d[i + 2] = clamp(d[i + 2] * k, 0, 255);
+    }
+    pctx.putImageData(id, 0, 0);
+
+    // полосовая рябь
+    for (let x = 0; x < bw; x++) {
+      if (r() < 0.06) {
+        pctx.globalAlpha = rand(r, 0.05, 0.18);
+        pctx.fillStyle = r() < 0.5 ? "#000" : "#fff";
+        pctx.fillRect(x, 0, randInt(r, 1, 3), h);
+      }
+    }
+    pctx.globalAlpha = 1;
+
+    // шум
+    pctx.globalCompositeOperation = "overlay";
+    pctx.globalAlpha = rand(r, 0.18, 0.4) * state.dirt;
+    pctx.fillStyle = pat(pctx);
+    pctx.fillRect(0, 0, bw, h);
+    pctx.globalCompositeOperation = "source-over";
+    pctx.globalAlpha = 1;
+
+    const fx = featherPx(Math.min(bw / 2, 30), r);
+    const fy = 1;
+    if (fx > 1) featherPatch(patch, fx, fy);
+
+    wctx.globalAlpha = rand(r, 0.9, 1);
+    wctx.drawImage(patch, x0, y, bw, h);
+    wctx.globalAlpha = 1;
+
+    // кромка снизу и тень сверху
+    wctx.globalAlpha = rand(r, 0.45, 0.9);
+    wctx.fillStyle = `rgb(${Math.round((1 - tint[0]) * 255 * 0.1 + 240)},${Math.round(240)},${Math.round(250)})`;
+    wctx.fillRect(x0, y + h - 1, bw, 1);
+    wctx.globalAlpha = 0.45;
+    wctx.fillStyle = "#000";
+    wctx.fillRect(x0, y, bw, 1);
+    wctx.globalAlpha = 1;
+
+    // рваные пропуски
+    const gaps = randInt(r, 0, 3);
+    for (let i = 0; i < gaps; i++) {
+      const gx = randInt(r, 0, Math.max(0, bw - 10));
+      const gw = randInt(r, 4, 22);
+      wctx.drawImage(work, x0 + gx, y, Math.min(gw, bw - gx), h, x0 + gx, y, Math.min(gw, bw - gx), h);
+    }
+  }
+
+
+
+  function progressiveAreas(r) {
+    // случайные участки с прогрессивным размытием
+    const W = state.W, H = state.H;
+    const strength = state.bgBlur;
+    if (strength <= 0.02) return;
+
+    const n = Math.round(randInt(r, 2, 3) * strength);
+    for (let k = 0; k < n; k++) {
+      const h = randInt(r, Math.floor(H * 0.05), Math.max(Math.floor(H * 0.06), Math.floor(H * 0.22)));
+      const y = randInt(r, 0, Math.max(0, H - h));
+      const w = randInt(r, Math.floor(W * 0.25), Math.max(Math.floor(W * 0.26), Math.floor(W * 0.85)));
+      const x0 = randInt(r, 0, Math.max(0, W - w));
+      if (h < 6 || w < 12) continue;
+      const radius = Math.max(1, Math.min(h, w) * rand(r, 0.02, 0.07) * strength);
+      const alongX = r() < 0.5;
+      const steps = 8;
+
+      patch.width = w; patch.height = h;
+      pctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < steps; i++) {
+        const t = (i + 0.5) / steps;
+        const rad = radius * Math.pow(t, 1.25);
+        pctx.filter = `blur(${rad.toFixed(1)}px)`;
+        if (alongX) {
+          const sw = Math.ceil(w / steps) + 8;
+          const sx = Math.round(i * w / steps) - 4;
+          pctx.drawImage(work, x0 + sx, y, sw, h, sx, 0, sw, h);
+        } else {
+          const sh = Math.ceil(h / steps) + 8;
+          const sy = Math.round(i * h / steps) - 4;
+          pctx.drawImage(work, x0, y + sy, w, sh, 0, sy, w, sh);
+        }
+      }
+      pctx.filter = "none";
+
+      const f = Math.min(14, Math.floor(Math.min(h, w) / 3));
+      featherPatch(patch, f, f);
+      wctx.drawImage(patch, x0, y, w, h);
+    }
+  }
+
+  function tornStreak(r, tint) {
+    // рваный штрих: яркие пиксели вытянуты вбок, каналы разъехались
+    const W = state.W, H = state.H;
+    const h = randInt(r, Math.max(18, Math.floor(H / 40)), Math.max(26, Math.floor(H / 12)));
+    if (h >= H) return;
+
+    let y = randInt(r, 0, H - h), best = -1;
+    for (let i = 0; i < 6; i++) {
+      const cy = randInt(r, 0, H - h);
+      const m = meanLum(0, cy, W, h);
+      if (m > best) { best = m; y = cy; }
+    }
+
+    const bwRaw = Math.max(80, Math.floor(W * rand(r, 0.22, 0.66)));
+    const x0 = randInt(r, Math.floor(W * 0.02), Math.max(Math.floor(W * 0.03), W - bwRaw - Math.floor(W * 0.02)));
+    const bw = Math.min(bwRaw, W - x0 - 4);
+    if (bw < 40) return;
+
+    const L = randInt(r, Math.max(12, Math.floor(W / 34)), Math.max(18, Math.floor(W / 10)));
+    const dir = r() < 0.65 ? 1 : -1;
+
+    snap.width = bw; snap.height = h;
+    sctx.clearRect(0, 0, bw, h);
+    sctx.drawImage(work, x0, y, bw, h, 0, 0, bw, h);
+
+    patch.width = bw; patch.height = h;
+    pctx.clearRect(0, 0, bw, h);
+    pctx.globalCompositeOperation = "source-over";
+    pctx.drawImage(snap, 0, 0);
+
+    // вытягивание ярких пикселей вбок
+    pctx.globalCompositeOperation = "lighten";
+    for (let k = 2; k < L; k += 2) {
+      pctx.drawImage(snap, 0, 0, bw, h, dir * k, 0, bw, h);
+    }
+    pctx.globalCompositeOperation = "source-over";
+    pctx.globalAlpha = 0.22;
+    pctx.drawImage(work, x0, y, bw, h, 0, 0, bw, h);
+    pctx.globalAlpha = 1;
+
+    // дисперсия: R уезжает сильнее B, плюс гамма и грязная вуаль
+    const id = pctx.getImageData(0, 0, bw, h);
+    const d = id.data;
+    const src = new Uint8ClampedArray(d);
+    const dr = Math.round(L * 0.12) * dir;
+    const db = Math.round(L * 0.09) * dir;
+    const gamma = rand(r, 1.2, 2.4);
+    const lut = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) lut[i] = Math.round(255 * Math.pow(i / 255, gamma));
+
+    const bx = Math.max(2, Math.floor(bw / 28));
+    const by = Math.max(2, Math.floor(h / 5));
+    const dirtW = Math.ceil(bw / bx) + 1, dirtH = Math.ceil(h / by) + 1;
+    const dirt = new Float32Array(dirtW * dirtH);
+    for (let i = 0; i < dirt.length; i++) dirt[i] = 0.35 + r() * 0.8;
+
+    for (let yy = 0; yy < h; yy++) {
+      const row = yy * bw * 4;
+      const drow = ((yy / by) | 0) * dirtW;
+      for (let xx = 0; xx < bw; xx++) {
+        const i = row + xx * 4;
+        const xr = clamp(xx + dr, 0, bw - 1);
+        const xb = clamp(xx - db, 0, bw - 1);
+        const rr = lut[src[row + xr * 4]];
+        const gg = lut[src[i + 1]];
+        const bb = lut[src[row + xb * 4 + 2]];
+        const k = 0.55 + 0.6 * dirt[drow + ((xx / bx) | 0)];
+        d[i] = rr * k;
+        d[i + 1] = gg * k;
+        d[i + 2] = bb * k;
+      }
+    }
+    pctx.putImageData(id, 0, 0);
+
+    // строчная дрожь
+    tmpCv.width = bw; tmpCv.height = h;
+    tctx.clearRect(0, 0, bw, h);
+    for (let rr = 0; rr < h; rr++) {
+      const dx = r() < 0.5 ? randInt(r, -24, 24) : 0;
+      tctx.drawImage(patch, 0, rr, bw, 1, dx, rr, bw, 1);
+    }
+    pctx.clearRect(0, 0, bw, h);
+    pctx.drawImage(tmpCv, 0, 0);
+
+    const fx = featherPx(Math.min(bw / 2, 40), r);
+    if (fx > 1) featherPatch(patch, fx, 0);
+
+    wctx.globalAlpha = rand(r, 0.92, 1);
+    wctx.drawImage(patch, x0, y, bw, h);
+    wctx.globalAlpha = 1;
+
+    if (r() < 0.55) {
+      const c = mixRgb([1, 1, 1], tint, 0.35);
+      wctx.globalAlpha = rand(r, 0.15, 0.45);
+      wctx.fillStyle = `rgb(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)})`;
+      wctx.fillRect(x0, y, bw, 1);
+      wctx.globalAlpha = 1;
+    }
+  }
+
+  function dirtyLines(r, tint) {
+    const W = state.W, H = state.H;
+    const n = Math.round(randInt(r, 2, 6) * state.dirt);
+    for (let i = 0; i < n; i++) {
+      const h = pick(r, [1, 1, 1, 2, 2, 3, 4]);
+      const y = randInt(r, 0, Math.max(0, H - h));
+      const w = Math.max(20, Math.floor(W * rand(r, 0.18, 0.62)));
+      const x = randInt(r, 0, Math.max(0, W - w));
+      const a = rand(r, 0.06, 0.3) * Math.min(1.4, state.dirt);
+      if (r() < 0.55) {
+        wctx.globalCompositeOperation = "source-over";
+        wctx.globalAlpha = a;
+        const c = mixRgb([1, 1, 1], tint, 0.35);
+        wctx.fillStyle = `rgb(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)})`;
+      } else {
+        wctx.globalCompositeOperation = "source-over";
+        wctx.globalAlpha = a;
+        wctx.fillStyle = "#000";
+      }
+      wctx.fillRect(x, y, w, h);
+      wctx.globalAlpha = 1;
+      wctx.globalCompositeOperation = "source-over";
+    }
+
+    // вертикальные обрывы
+    const vs = randInt(r, 1, 4);
+    for (let i = 0; i < vs; i++) {
+      const w = randInt(r, 1, 6);
+      const x = randInt(r, 0, Math.max(0, W - w));
+      const y0 = randInt(r, 0, Math.floor(H / 2));
+      const hh = randInt(r, Math.floor(H / 6), H);
+      wctx.globalCompositeOperation = "overlay";
+      wctx.globalAlpha = rand(r, 0.12, 0.35) * state.dirt;
+      wctx.fillStyle = pat(wctx);
+      wctx.fillRect(x, y0, w, Math.min(hh, H - y0));
+      wctx.globalAlpha = 1;
+      wctx.globalCompositeOperation = "source-over";
+    }
+  }
+
+  /* ---------- текст ---------- */
+  function drawTracked(ctx, x, y, text, tracking) {
+    for (const ch of text) {
+      ctx.fillText(ch, x, y);
+      x += ctx.measureText(ch).width + tracking;
+    }
+    return x;
+  }
+
+  function randomLine(r, min = 1, max = 5) {
+    const n = randInt(r, min, max);
+    let s = "";
+    for (let i = 0; i < n; i++) s += CHARSET[Math.floor(r() * CHARSET.length)];
+    return s;
+  }
+
+  function drawGlyphs(r, tint) {
+    const W = state.W, H = state.H;
+    const d = state.glyphs;
+    if (d <= 0.01) return;
+
+    const clusters = Math.max(3, Math.round(randInt(r, 6, 11) * d));
+    for (let ci = 0; ci < clusters; ci++) {
+      const big = r() < 0.18;
+      const fs = Math.round(H * (big ? rand(r, 0.024, 0.032) : rand(r, 0.014, 0.022)));
+      if (fs < 11) continue;
+      const tracking = fs * rand(r, 0.14, 0.9);
+      const zone = r();
+      let x;
+      if (zone < 0.3) x = rand(r, 0.03, 0.22) * W;
+      else if (zone < 0.55) x = rand(r, 0.3, 0.62) * W;
+      else if (zone < 0.8) x = rand(r, 0.62, 0.88) * W;
+      else x = rand(r, 0.86, 0.97) * W;
+      const y0 = rand(r, 0.04, 0.9) * H;
+
+      const accent = r() < 0.3;
+      if (accent) {
+        const c = mixRgb([1, 1, 1], tint, 0.45);
+        octx.fillStyle = `rgba(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)},${rand(r, 0.55, 1).toFixed(2)})`;
+      } else {
+        octx.fillStyle = `rgba(250,250,252,${rand(r, 0.55, 0.98).toFixed(2)})`;
+      }
+      octx.font = `${fs}px "Medeo Sans", Arial, sans-serif`;
+      octx.textBaseline = "top";
+
+      if (r() < 0.18) {
+        const step = fs * rand(r, 1.15, 1.9);
+        const n = randInt(r, 3, 9);
+        for (let i = 0; i < n; i++) {
+          octx.fillText(CHARSET[Math.floor(r() * CHARSET.length)], x, y0 + i * step);
+        }
+        continue;
+      }
+
+      const lines = randInt(r, 1, 6);
+      const lh = fs * rand(r, 1.15, 1.55);
+      for (let li = 0; li < lines; li++) {
+        if (r() < 0.18) {
+          const a = randomLine(r, 1, 3), b = randomLine(r, 1, 3);
+          const w = drawTracked(octx, x, y0 + li * lh, a, tracking);
+          drawTracked(octx, w + fs * rand(r, 2, 5.5), y0 + li * lh, b, tracking);
+        } else {
+          const off = r() < 0.25 ? fs * rand(r, 1, 3) : 0;
+          drawTracked(octx, x + off, y0 + li * lh, randomLine(r), tracking);
+        }
+      }
+    }
+
+    // колонки по краям
+    const cols = Math.round(randInt(r, 3, 7) * d);
+    for (let i = 0; i < cols; i++) {
+      const fs = Math.round(H * rand(r, 0.012, 0.018));
+      if (fs < 10) continue;
+      const right = r() < 0.5;
+      const x = right ? rand(r, 0.955, 0.99) * W : rand(r, 0.005, 0.035) * W;
+      const y0 = rand(r, 0, 0.55) * H;
+      const step = fs * rand(r, 1.1, 2.0);
+      const n = randInt(r, 4, 14);
+      octx.font = `${fs}px "Medeo Sans", Arial, sans-serif`;
+      octx.textBaseline = "top";
+      for (let k = 0; k < n; k++) {
+        octx.fillStyle = `rgba(235,240,255,${rand(r, 0.25, 0.75).toFixed(2)})`;
+        octx.fillText(r() < 0.7 ? CHARSET[Math.floor(r() * CHARSET.length)] : ":", x, y0 + k * step);
+      }
+    }
+    octx.textBaseline = "alphabetic";
+  }
+
+  /* ---------- полосы-оверлеи ---------- */
+  function overlayBars(r, tint) {
+    const W = state.W, H = state.H;
+    const n = Math.round(randInt(r, 2, 5) * (state.intensity * 0.6 + 0.4));
+    for (let i = 0; i < n; i++) {
+      let h = pick(r, [1, 1, 1, 2, 2, 3, 4, 6, 10]);
+      const y = randInt(r, 0, Math.max(0, H - h));
+      let x0, w;
+      if (r() < 0.08) { x0 = 0; w = W; }
+      else {
+        w = Math.max(80, Math.floor(W * rand(r, 0.12, 0.55)));
+        x0 = randInt(r, 0, Math.max(0, W - w));
+      }
+      const dark = r() < 0.22;
+      let alpha = dark ? rand(r, 0.12, 0.34) : rand(r, 0.07, 0.3);
+      let colour;
+      if (dark) colour = "rgb(3,3,4)";
+      else {
+        const c = mixRgb([1, 1, 1], tint, rand(r, 0.1, 0.6));
+        colour = `rgb(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)})`;
+      }
+      if (r() < 0.15) { h = randInt(r, Math.floor(H * 0.02), Math.floor(H * 0.07)); alpha *= 0.18; }
+      octx.globalCompositeOperation = dark ? "source-over" : "screen";
+      octx.globalAlpha = alpha;
+      octx.fillStyle = colour;
+      octx.fillRect(x0, y, w, h);
+      octx.globalAlpha = 1;
+      octx.globalCompositeOperation = "source-over";
+    }
+  }
+
+  /* ---------- финиш ---------- */
+  function finish(r) {
+    const W = state.W, H = state.H;
+
+    // мягкая подсветка светлых зон
+    patch.width = W; patch.height = H;
+    pctx.clearRect(0, 0, W, H);
+    pctx.filter = `blur(${Math.max(2, Math.round(Math.min(W, H) * 0.015))}px) contrast(1.6) brightness(0.55)`;
+    pctx.drawImage(work, 0, 0);
+    pctx.filter = "none";
+    wctx.globalCompositeOperation = "screen";
+    wctx.globalAlpha = 0.18;
+    wctx.drawImage(patch, 0, 0);
+    wctx.globalAlpha = 1;
+    wctx.globalCompositeOperation = "source-over";
+
+    // виньетка
+    const g = wctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.15, W / 2, H / 2, Math.max(W, H) * 0.72);
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(1, `rgba(${Math.round(255 * 0.30)},${Math.round(255 * 0.30)},${Math.round(255 * 0.34)},1)`);
+    wctx.globalCompositeOperation = "multiply";
+    wctx.fillStyle = g;
+    wctx.fillRect(0, 0, W, H);
+    wctx.globalCompositeOperation = "source-over";
+
+    // зерно
+    wctx.globalCompositeOperation = "overlay";
+    wctx.globalAlpha = clamp(0.10 * state.dirt, 0, 0.3);
+    wctx.fillStyle = pat(wctx);
+    wctx.fillRect(0, 0, W, H);
+    wctx.globalAlpha = 1;
+    wctx.globalCompositeOperation = "source-over";
+
+    // пыль и царапины
+    const specks = Math.round(randInt(r, 20, 60) * state.dirt);
+    for (let i = 0; i < specks; i++) {
+      const x = randInt(r, 0, W), y = randInt(r, 0, H);
+      const w = randInt(r, 1, 3), h = randInt(r, 1, 2);
+      const bright = r() < 0.6;
+      octx.fillStyle = bright ? `rgba(255,255,255,${rand(r, 0.2, 0.6).toFixed(2)})` : `rgba(0,0,0,${rand(r, 0.3, 0.7).toFixed(2)})`;
+      octx.fillRect(x, y, w, h);
+    }
+  }
+
+  /* ---------- главный рендер ---------- */
+  function render() {
+    if (!state.img) return;
+    const r = mulberry32(state.seed);
+    const W = state.W, H = state.H;
+
+    // база
+    wctx.setTransform(1, 0, 0, 1, 0, 0);
+    wctx.globalAlpha = 1;
+    wctx.globalCompositeOperation = "source-over";
+    wctx.clearRect(0, 0, W, H);
+    wctx.drawImage(state.img, 0, 0, W, H);
+
+    const id = wctx.getImageData(0, 0, W, H);
+    const resolved = resolveTint(id);
+    state.noTint = resolved === null;
+    const tint = resolved || [1, 1, 1];
+    if (resolved) applyDuotone(wctx, resolved);
+    else applyNeutral(wctx);
+    buildLumMap();
+    progressiveAreas(r);
+
+    // полосы
+    const count = Math.round(randInt(r, 9, 15) * state.intensity);
+    for (let i = 0; i < count; i++) {
+      const roll = r();
+      if (roll < 0.05) tornStreak(r, tint);
+      else if (roll < 0.09) streakBar(r, tint);
+      else if (roll < 0.16) gradientBand(r);
+      else if (roll < 0.34) stretchFill(r);
+      else if (roll < 0.46) warpStretch(r);
+      else if (roll < 0.54) stripeH(r);
+      else if (roll < 0.68) shiftBand(r);
+      else if (roll < 0.80) progressiveBlur(r);
+      else if (roll < 0.90) motionBlur(r);
+      else if (roll < 0.96) { /* призрак: мягкий сдвиг */ shiftBand(r); }
+      else dirtyLines(r, tint);
+    }
+
+    for (let i = 0; i < Math.round(randInt(r, 2, 5) * state.intensity); i++) streakBar(r, tint);
+    for (let i = 0; i < Math.round(randInt(r, 2, 4) * state.intensity); i++) tornStreak(r, tint);
+    for (let i = 0; i < Math.round(randInt(r, 1, 4) * state.intensity); i++) stretchFill(r);
+
+    dirtyLines(r, tint);
+
+    // переносим на выход
+    octx.globalCompositeOperation = "source-over";
+    octx.globalAlpha = 1;
+    octx.setTransform(1, 0, 0, 1, 0, 0);
+    octx.clearRect(0, 0, W, H);
+    octx.drawImage(work, 0, 0);
+
+    if (state.text) drawGlyphs(r, tint);
+    overlayBars(r, tint);
+
+    finish(r);
+
+    // хроматическая аберрация
+    const d = Math.round(rand(r, 1, 2.5));
+    if (d > 0) {
+      const img = octx.getImageData(0, 0, W, H);
+      const src = new Uint8ClampedArray(img.data);
+      const data = img.data;
+      for (let y = 0; y < H; y++) {
+        const row = y * W * 4;
+        for (let x = 0; x < W; x++) {
+          const i = row + x * 4;
+          const xr = clamp(x + d, 0, W - 1);
+          const xb = clamp(x - d, 0, W - 1);
+          let rr = src[row + xr * 4];
+          let gg = src[i + 1];
+          let bb = src[row + xb * 4 + 2];
+          const l = 0.2126 * rr + 0.7152 * gg + 0.0722 * bb;
+          const sat = state.noTint ? 1.04 : 1.14;
+          rr = l + (rr - l) * sat;
+          gg = l + (gg - l) * sat;
+          bb = l + (bb - l) * sat;
+          data[i] = clamp((rr - 128) * 1.05 + 128, 0, 255);
+          data[i + 1] = clamp((gg - 128) * 1.05 + 128, 0, 255);
+          data[i + 2] = clamp((bb - 128) * 1.05 + 128, 0, 255);
+        }
+      }
+      octx.putImageData(img, 0, 0);
+    }
+
+    // кадр для живого режима
+    base.width = W; base.height = H;
+    bctx.drawImage(out, 0, 0);
+    liveCv.width = W; liveCv.height = H;
+
+    $("seed").textContent = state.seed;
+  }
+
+  /* ---------- живой режим ---------- */
+  let liveTimer = null;
+  function liveTick() {
+    if (!state.live || !state.img) return;
+    const W = state.W, H = state.H;
+    lctx.clearRect(0, 0, W, H);
+
+    // редкие сдвинутые куски
+    if (Math.random() < 0.22) {
+      const h = randInt(Math.random, 2, Math.max(4, Math.floor(H * 0.06)));
+      const y = randInt(Math.random, 0, Math.max(0, H - h));
+      const dx = randInt(Math.random, -18, 18);
+      lctx.globalAlpha = 0.85;
+      lctx.drawImage(base, 0, y, W, h, dx, y, W, h);
+      lctx.globalAlpha = 1;
+    }
+
+    // бегущая полоса
+    const t = (performance.now() / 900) % 1;
+    const sy = t * H;
+    const g = lctx.createLinearGradient(0, sy - 40, 0, sy + 40);
+    g.addColorStop(0, "rgba(255,255,255,0)");
+    g.addColorStop(0.5, "rgba(255,255,255,0.045)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    lctx.fillStyle = g;
+    lctx.fillRect(0, sy - 40, W, 80);
+
+    // лёгкое мерцание
+    lctx.fillStyle = `rgba(255,255,255,${(Math.random() * 0.02).toFixed(3)})`;
+    lctx.fillRect(0, 0, W, H);
+  }
+
+  function startLive() {
+    stopLive();
+    liveCv.classList.add("on");
+    liveTimer = setInterval(liveTick, 80);
+  }
+  function stopLive() {
+    if (liveTimer) clearInterval(liveTimer);
+    liveTimer = null;
+    liveCv.classList.remove("on");
+    lctx.clearRect(0, 0, liveCv.width, liveCv.height);
+  }
+
+  /* ---------- загрузка ---------- */
+  function loadImage(src) {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      state.img = img;
+      const maxW = 1800;
+      const scale = Math.min(1, maxW / img.naturalWidth);
+      state.W = Math.round(img.naturalWidth * scale);
+      state.H = Math.round(img.naturalHeight * scale);
+      out.width = state.W; out.height = state.H;
+      work.width = state.W; work.height = state.H;
+      octx.fillStyle = "#000"; octx.fillRect(0, 0, state.W, state.H);
+      $("empty").style.display = "none";
+      $("frame").style.display = "block";
+      $("dims").textContent = `${state.W}×${state.H}`;
+      $("hint").textContent = "перетащи другое фото, чтобы заменить";
+      rerender();
+      if (state.live) startLive();
+    };
+    img.onerror = () => {
+      $("hint").textContent = "не удалось загрузить изображение";
+    };
+    img.src = src;
+  }
+
+  function handleFile(file) {
+    if (!file || !file.type.startsWith("image/")) return;
+    const url = URL.createObjectURL(file);
+    loadImage(url);
+  }
+
+  /* ---------- перерисовка с задержкой ---------- */
+  let rafId = 0;
+  function rerender() {
+    const busy = $("busy");
+    busy.classList.add("on");
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      try { render(); } catch (e) { console.error(e); $("hint").textContent = "ошибка рендера: " + e.message; }
+      busy.classList.remove("on");
+      if (state.live) { base.width = state.W; base.height = state.H; bctx.drawImage(out, 0, 0); }
+    });
+  }
+
+  /* ---------- контролы ---------- */
+  const drop = $("drop");
+  drop.addEventListener("click", () => $("file").click());
+  $("file").addEventListener("change", (e) => handleFile(e.target.files[0]));
+
+  ["dragenter", "dragover"].forEach((ev) => {
+    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); });
+    document.addEventListener(ev, (e) => e.preventDefault());
+  });
+  ["dragleave", "drop"].forEach((ev) => {
+    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); });
+  });
+  document.addEventListener("drop", (e) => {
+    e.preventDefault();
+    handleFile(e.dataTransfer.files[0]);
+  });
+
+  $("tints").addEventListener("click", (e) => {
+    const b = e.target.closest(".swatch[data-tint]");
+    if (!b) return;
+    document.querySelectorAll(".swatch[data-tint]").forEach((s) => s.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    state.tint = b.dataset.tint;
+    rerender();
+  });
+  $("custom").addEventListener("input", (e) => {
+    document.querySelectorAll(".swatch[data-tint]").forEach((s) => s.setAttribute("aria-pressed", "false"));
+    e.target.closest(".swatch").style.setProperty("--c", e.target.value);
+    state.tint = e.target.value;
+    rerender();
+  });
+
+  function bindRange(id, key, digits = 1) {
+    const el = $(id), out = $(id + "-v");
+    el.addEventListener("input", () => {
+      state[key] = parseFloat(el.value);
+      out.textContent = state[key].toFixed(digits);
+      rerender();
+    });
+  }
+  bindRange("intensity", "intensity");
+  bindRange("dirt", "dirt");
+  bindRange("glyphs", "glyphs");
+  bindRange("bgblur", "bgBlur");
+  bindRange("feather", "feather");
+
+  $("text-btn").addEventListener("click", (e) => {
+    state.text = !state.text;
+    e.currentTarget.setAttribute("aria-pressed", String(state.text));
+    rerender();
+  });
+
+  $("live-btn").addEventListener("click", (e) => {
+    state.live = !state.live;
+    e.currentTarget.setAttribute("aria-pressed", String(state.live));
+    if (state.live) startLive(); else stopLive();
+  });
+
+  $("again").addEventListener("click", () => {
+    state.seed = Math.floor(Math.random() * 900000) + 100000;
+    rerender();
+  });
+
+  function flashLabel(btn, text) {
+    if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+    btn.textContent = text;
+    clearTimeout(btn._flash);
+    btn._flash = setTimeout(() => { btn.textContent = btn.dataset.label; }, 1500);
+  }
+
+  $("copy").addEventListener("click", async () => {
+    if (!state.img) return;
+    const btn = $("copy");
+    try {
+      const blob = await new Promise((res) => out.toBlob(res, "image/png"));
+      if (!blob) throw new Error("пустой кадр");
+      if (!navigator.clipboard || !window.ClipboardItem) {
+        throw new Error("браузер не поддерживает");
+      }
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      flashLabel(btn, "Скопировано");
+    } catch (e) {
+      $("hint").textContent = "копирование: " + (e && e.message ? e.message : "не вышло");
+      flashLabel(btn, "Не вышло");
+    }
+  });
+
+  $("save").addEventListener("click", () => {
+    if (!state.img) return;
+    out.toBlob((blob) => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `glitch-${state.seed}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }, "image/png");
+  });
+
+  // клавиша R — новый вариант
+  window.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "r" && !e.metaKey && !e.ctrlKey) $("again").click();
+  });
+
+  /* ---------- параметры из URL ---------- */
+  const params = new URLSearchParams(location.search);
+  if (params.has("seed")) state.seed = parseInt(params.get("seed"), 10) || state.seed;
+  if (params.has("tint")) {
+    state.tint = params.get("tint");
+    const b = document.querySelector(`.swatch[data-tint="${state.tint}"]`);
+    if (b) b.setAttribute("aria-pressed", "true");
+  }
+  if (params.has("feather")) {
+    state.feather = parseFloat(params.get("feather"));
+    $("feather").value = state.feather;
+    $("feather-v").textContent = state.feather.toFixed(1);
+  }
+
+  document.fonts.ready.then(() => {
+    const src = params.get("img");
+    if (src) loadImage(src);
+  });
+})();
+</script>
+</body>
+</html>
